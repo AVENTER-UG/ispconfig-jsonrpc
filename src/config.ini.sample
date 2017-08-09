@@ -1,0 +1,6 @@
+[ispconfig]
+username = '';
+password = '';
+location = 'https://<domain>/remote/index.php';
+billing = 'https://<domain>/remote/billing.php';
+uri = 'https://<domain>/remote/';

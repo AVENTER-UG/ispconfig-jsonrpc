@@ -1,0 +1,1 @@
+This is a json gateway to ISPConfigs Soap API
