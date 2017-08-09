@@ -25,7 +25,7 @@ function getInvoicesOfClient() {
 	if($sessionId) {
 		try {
 			$client = $soap->client_get_by_username($sessionId, htmlentities($jPost->customer));
-			$invoices = $soap->billing_invoice_get_by_client($sessionId, $client["client_id"], 10);
+			$invoices = $soap->billing_invoice_get_by_client($sessionId, $client["client_id"], 0);
 			$res['data'] = $invoices;
 		} catch(SoapFault $e) {
 			$res['error'] = "ERR GC:\t".htmlentities($jPost->login)."\t".$e->getMessage()."\t".$soap->__getLastResponse()."\n"; 
