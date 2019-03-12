@@ -8,6 +8,7 @@ $jPost = json_decode(file_get_contents("php://input"));
 switch (htmlentities($jPost->func)) {
 	case "getInvoicesOfClient": getInvoicesOfClient(); break;
 	case "createInvoice": createInvoice(); break;
+	case "checkAuth": checkAuth(); break;
 	case "test": test(); break;
 }
 
@@ -110,6 +111,37 @@ function createInvoice() {
 	}
 
 	echo json_encode($res);	
+}
+
+/*
+ * Function to authentication the user via the rex_com_user table
+ *   return = true (user auth correct) or false (user auth incorrect)
+ */
+function checkAuth() {
+	global $jPost;
+	global $config;
+
+	$res['method'] = "checkAuth";
+		
+	list($soap, $sessionId) = ispLogin();	
+
+	list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':', base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
+
+	if (empty($_SERVER['PHP_AUTH_USER'])) {
+			header('WWW-Authenticate: Basic realm="DNS"');
+	    	header('HTTP/1.0 401 Unauthorized');
+	    	die("Authentication could not finish");
+	} 
+	
+	$cusUser = htmlspecialchars($_SERVER['PHP_AUTH_USER'], ENT_QUOTES, 'UTF-8');
+	$cusPassword = htmlspecialchars($_SERVER['PHP_AUTH_PW'], ENT_QUOTES, 'UTF-8');
+
+	$sessionId = $soap->login($cusUser,$cusPassword, true);
+
+	if ($sessionId) {
+		$res['auth'] = true;
+		return json_encode($res);
+	}
 }
 
 // ISPConfig Login
