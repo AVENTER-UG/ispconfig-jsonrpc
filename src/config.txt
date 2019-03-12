@@ -1,0 +1,19 @@
+[ispconfig]
+username = '$username'
+password = '$password'
+location = '$location'
+billing = '$billing'
+uri = '$uri'
+
+[mysql]
+username = '$mysql_username'
+password = '$mysql_password'
+host = '$mysql_host'
+database = '$mysql_database'
+
+[company]
+id = $id
+vat = $vat
+default_invoice_template = $default_invoice_template
+default_invoice_email_template = $default_invoice_email_template
+payment_terms = $payment_terms

@@ -1,3 +1,6 @@
 src/callback
 src/callback/*.*
 src/callback/classes/*.*
+src/.config.ini
+start.sh
+info.php

@@ -1,9 +1,8 @@
 <?php
 
-$config = parse_ini_file("config.ini", true);
+$config = parse_ini_file(".config.ini", true);
 
 $jPost = json_decode(file_get_contents("php://input"));
-
 
 switch (htmlentities($jPost->func)) {
 	case "getInvoicesOfClient": getInvoicesOfClient(); break;
@@ -125,32 +124,44 @@ function checkAuth() {
 		
 	list($soap, $sessionId) = ispLogin();	
 
-	list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':', base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
-
-	if (empty($_SERVER['PHP_AUTH_USER'])) {
-			header('WWW-Authenticate: Basic realm="DNS"');
-	    	header('HTTP/1.0 401 Unauthorized');
-	    	die("Authentication could not finish");
-	} 
-	
-	$cusUser = htmlspecialchars($_SERVER['PHP_AUTH_USER'], ENT_QUOTES, 'UTF-8');
-	$cusPassword = htmlspecialchars($_SERVER['PHP_AUTH_PW'], ENT_QUOTES, 'UTF-8');
-
-	$sessionId = $soap->login($cusUser,$cusPassword, true);
-
 	if ($sessionId) {
-		$res['auth'] = true;
-		return json_encode($res);
+		list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':', base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
+		
+		if (empty($_SERVER['PHP_AUTH_USER'])) {
+				header('WWW-Authenticate: Basic realm="DNS"');
+		    	header('HTTP/1.0 401 Unauthorized');
+		    	die("Authentication could not finish");
+		} 
+
+		$cusUser = htmlspecialchars($_SERVER['PHP_AUTH_USER'], ENT_QUOTES, 'UTF-8');
+		$cusPassword = htmlspecialchars($_SERVER['PHP_AUTH_PW'], ENT_QUOTES, 'UTF-8');
+		try {
+			$res['client'] = $soap->client_login_get($sessionId,$cusUser,$cusPassword);
+			$res['auth'] = true;
+		} catch(SoapFault $e) {
+			$res['error'] = $e;
+			$res['auth'] = false;
+		}
 	}
+	
+	print json_encode($res);
 }
 
 // ISPConfig Login
 function ispLogin() {
 	global $config;
 
+	$context = stream_context_create([
+		'ssl' => [
+			// set some SSL/TLS specific options
+			'verify_peer' => false,
+			'verify_peer_name' => false,
+			'allow_self_signed' => $config["ispconfig"]["allow_self_signed"]
+		]
+	]);
 
-	$soap = new SoapClient(null, array('location' => $config["ispconfig"]["location"], 'uri' => $config["ispconfig"]["uri"]));
-	$soapBilling = new SoapClient(null, array('location' => $config["ispconfig"]["billing"], 'uri' => $config["ispconfig"]["uri"]));	
+	$soap = new SoapClient(null, array('location' => $config["ispconfig"]["location"], 'uri' => $config["ispconfig"]["uri"], 'stream_context' => $context));
+	$soapBilling = new SoapClient(null, array('location' => $config["ispconfig"]["billing"], 'uri' => $config["ispconfig"]["uri"], 'stream_context' => $context));
 
 	$sessionId = $soap->login($config["ispconfig"]["username"],$config["ispconfig"]["password"]);
 
