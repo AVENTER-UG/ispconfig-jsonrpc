@@ -8,11 +8,11 @@ switch (htmlentities($jPost->func)) {
 	case "getInvoicesOfClient": getInvoicesOfClient(); break;
 	case "createInvoice": createInvoice(); break;
 	case "checkAuth": checkAuth(); break;
-	case "test": test(); break;
+	case "health": test(); break;
 }
 
 function test() {
-	echo "testA";
+	echo "ok";
 }
 
 // curl -H "Content-Type: application/json" -X POST localhost:8888/jsonrpc.php -d '{"func":"getInvoicesOfClient","customer":"customername"}'
