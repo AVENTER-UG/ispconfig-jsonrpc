@@ -128,7 +128,7 @@ function checkAuth() {
 
 	if ($sessionId) {
 		list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':', base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
-		
+
 		if (empty($_SERVER['PHP_AUTH_USER'])) {
 				header('WWW-Authenticate: Basic realm="DNS"');
 		    	header('HTTP/1.0 401 Unauthorized');

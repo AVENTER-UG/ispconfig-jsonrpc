@@ -4,6 +4,7 @@ password = '$isp_password'
 location = '$isp_location'
 billing = '$isp_billing'
 uri = '$isp_uri'
+allow_self_signed = '$isp_allow_self_signed'
 
 [company]
 id = $isp_id
