@@ -115,6 +115,8 @@ function createInvoice() {
 /*
  * Function to authentication the user via the rex_com_user table
  *   return = true (user auth correct) or false (user auth incorrect)
+ * 
+ * curl -vvv -H "Content-Type: application/json" -u <username>:<password> -X POST localhost:8777/jsonrpc.php -d '{"func":"checkAuth"}'
  */
 function checkAuth() {
 	global $jPost;
