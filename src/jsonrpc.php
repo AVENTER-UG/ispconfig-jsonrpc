@@ -104,7 +104,7 @@ function createInvoice() {
 				//$soap->billing_invoice_send($sessionId, $invoiceId, $config["company"]["default_invoice_email_template"]);
 				$res["data"] = $invoiceId;
 			}
-		} catch (SoapFailt $e) {
+		} catch (SoapFault $e) {
 			$res['error'] = "ERR GC:\t".htmlentities($jPost->customer)."\t".$e->getMessage()."\t".$soap->__getLastResponse()."\n"; 
 		}
 	}
