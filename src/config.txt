@@ -5,12 +5,6 @@ location = '$location'
 billing = '$billing'
 uri = '$uri'
 
-[mysql]
-username = '$mysql_username'
-password = '$mysql_password'
-host = '$mysql_host'
-database = '$mysql_database'
-
 [company]
 id = $id
 vat = $vat

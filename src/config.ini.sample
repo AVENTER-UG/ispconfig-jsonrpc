@@ -6,13 +6,6 @@ billing = 'https://<domain>/remote/billing.php'
 uri = 'https://<domain>/remote/'
 allow_self_signed = true
 
-[mysql]
-username = ''
-password = ''
-host = ''
-database = ''
-
-
 [company]
 id = 1
 vat = 19.00
