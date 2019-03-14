@@ -20,13 +20,16 @@ function health() {
 function getInvoices() {
 	global $jPost;
 
+	$res['method'] = "getInvoices";	
+
+	// Check if the token is valid and the owner is a user
 	$token = checkToken();
-	if (!$token["auth"]) {
+	if (!isUser($token)) {
+		$res["auth"] = "false";
+		echo json_encode($res);	
 		return;
 	}	
-
-	$res['method'] = "getInvoices";	
-		
+	
 	list($soap, $sessionId) = ispLogin();
 	
 	if($sessionId) {
@@ -50,12 +53,15 @@ function createInvoice() {
 	global $jPost;
 	global $config;
 
+	$res['method'] = "createInvoice";	
+
+	// Check if the token is valid and the owner is a admin
 	$token = checkToken();
-	if (!$token["auth"] || $token["type"] == "User") {
+	if (!isAdmin($token)) {
+		$res["auth"] = "false";
+		echo json_encode($res);	
 		return;
 	}	
-
-	$res['method'] = "createInvoice";	
 		
 	list($soap, $sessionId) = ispLogin();
 
@@ -159,6 +165,25 @@ function checkAuth() {
 	print json_encode($res);
 }
 
+
+// Function to check if the token is from a user
+//	return true if its a users token
+function isUser($token) {
+	if ($token["type"] == "User") {
+		return true;
+	}
+	return false;
+}
+
+// Function to check if the token is from a admin
+//	return true if its a users token
+function isAdmin($token) {
+	if ($token["type"] == "Admin") {
+		return true;
+	}
+	return false;
+}
+
 // checkToken will very the token
 // return = array of (auth: true or false, client_id)
 function checkToken() {
@@ -189,6 +214,7 @@ function checkToken() {
 	}
 
 	$responseData = json_decode($response, true);
+
 	return $responseData;
 }
 
