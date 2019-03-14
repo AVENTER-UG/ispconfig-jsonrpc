@@ -11,3 +11,6 @@ id = 1
 vat = 19.00
 default_invoice_template = 1
 default_invoice_email_template = 1
+
+[auth]
+auth_server = 'https://<server>/'

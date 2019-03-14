@@ -5,37 +5,42 @@ $config = parse_ini_file(".config.ini", true);
 $jPost = json_decode(file_get_contents("php://input"));
 
 switch (htmlentities($jPost->func)) {
-	case "getInvoicesOfClient": getInvoicesOfClient(); break;
+	case "getInvoices": getInvoices(); break;
 	case "createInvoice": createInvoice(); break;
 	case "checkAuth": checkAuth(); break;
-	case "health": test(); break;
+	case "health": health(); break;
 }
 
-function test() {
+function health() {
 	echo "ok";
 }
 
-// curl -H "Content-Type: application/json" -X POST localhost:8888/jsonrpc.php -d '{"func":"getInvoicesOfClient","customer":"customername"}'
-function getInvoicesOfClient() {
+// getInvoices give out all invoices of the customer
+// curl -H "Content-Type: application/json" -X POST localhost:8888/jsonrpc.php -d '{"func":"getInvoices"}'
+function getInvoices() {
 	global $jPost;
 
-	$res['method'] = "getInvoicesOfClient";	
+	$token = checkToken();
+	if (!$token["auth"]) {
+		return;
+	}	
+
+	$res['method'] = "getInvoices";	
 		
 	list($soap, $sessionId) = ispLogin();
 	
 	if($sessionId) {
 		try {
-			$client = $soap->client_get_by_username($sessionId, htmlentities($jPost->customer));
-			$invoices = $soap->billing_invoice_get_by_client($sessionId, $client["client_id"], 0);
+			$invoices = $soap->billing_invoice_get_by_client($sessionId, $token["client_id"], 0);
 			$res['data'] = $invoices;
 		} catch(SoapFault $e) {
-			$res['error'] = "ERR GC:\t".htmlentities($jPost->customer)."\t".$e->getMessage()."\t".$soap->__getLastResponse()."\n"; 
+			$res['error'] = "ERR GC:\t".htmlentities($token["client_id"])."\t".$e->getMessage()."\t".$soap->__getLastResponse()."\n"; 
 		} 
 		
 		// logout user
 		$soap->logout($sessionId);	
 	} else {
-		$res['error'] = "ERR GC:\t".htmlentities($jPost->login)."\tcould not connect to the backend\n";
+		$res['error'] = "ERR GC:\t".htmlentities($client["client_id"])."\tcould not connect to the backend\n";
 	}	
 	echo json_encode($res);		
 }	
@@ -44,6 +49,11 @@ function getInvoicesOfClient() {
 function createInvoice() {
 	global $jPost;
 	global $config;
+
+	$token = checkToken();
+	if (!$token["auth"] || $token["type"] == "User") {
+		return;
+	}	
 
 	$res['method'] = "createInvoice";	
 		
@@ -147,6 +157,39 @@ function checkAuth() {
 	}
 	
 	print json_encode($res);
+}
+
+// checkToken will very the token
+// return = array of (auth: true or false, client_id)
+function checkToken() {
+	global $config;
+
+	$authToken = substr($_SERVER['HTTP_AUTHORIZATION'], 7);
+
+	if (empty($authToken)) {
+			header('Authorization: Bearer');
+			header('HTTP/1.0 401 Unauthorized');
+			die("Authentication could not finish");
+	}
+	// Setup cURL
+	$ch = curl_init($config["auth"]["auth_server"]);
+	curl_setopt_array($ch, array(
+	    CURLOPT_POST => false,
+	    CURLOPT_RETURNTRANSFER => true,
+	    CURLOPT_HTTPHEADER => array(
+	        'Authorization: Bearer '.$authToken,
+	        'Content-Type: application/json'
+	    )
+	));
+
+	$response = curl_exec($ch);
+
+	if($response === false){
+		return false;
+	}
+
+	$responseData = json_decode($response, true);
+	return $responseData;
 }
 
 // ISPConfig Login
