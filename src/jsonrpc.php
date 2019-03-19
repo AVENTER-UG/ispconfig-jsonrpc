@@ -6,6 +6,7 @@ $jPost = json_decode(file_get_contents("php://input"));
 
 switch (htmlentities($jPost->func)) {
 	case "getInvoices": getInvoices(); break;
+	case "getClient": getClient(); break;
 	case "createInvoice": createInvoice(); break;
 	case "checkAuth": checkAuth(); break;
 	case "health": health(); break;
@@ -61,7 +62,7 @@ function createInvoice() {
 		$res["auth"] = "false";
 		echo json_encode($res);	
 		return;
-	}	
+	}
 		
 	list($soap, $sessionId) = ispLogin();
 
@@ -128,6 +129,40 @@ function createInvoice() {
 	echo json_encode($res);	
 }
 
+
+/*
+ * Function to get out all client information
+ *   return = json with client information
+ * curl -vvv -d '{"func":"getCient"}' -H "Content-Type: application/json"  -H "Authorization: Bearer <TOKEN>" -X GET localhost:8777/jsonrpc.php
+ */
+function getClient() {
+	global $jPost;
+	global $config;
+
+	$res['method'] = "getClient";	
+
+	// the token have to be valid and should be from a user or a admin
+	$token = checkToken();
+	if (!isUser($token) && !isAdmin($token) ) {
+		$res["auth"] = "false";
+		echo json_encode($res);	
+		return;
+	}		
+
+	list($soap, $sessionId) = ispLogin();
+
+	if ($sessionId) {
+		try {
+			$res = $soap->client_get($sessionId, $token->client_id);		
+  		} catch(SoapFault $e) {		
+			$res['error'] = "ERR GC:\t".$jPost->customer."\t".$e->getMessage()."\t".$soap->__getLastResponse()."\n"; 
+		} 			
+	}
+
+	print json_encode($res);	
+}
+
+
 /*
  * Function to authentication the user via the rex_com_user table
  *   return = true (user auth correct) or false (user auth incorrect)
@@ -154,7 +189,7 @@ function checkAuth() {
 		$cusUser = htmlspecialchars($_SERVER['PHP_AUTH_USER'], ENT_QUOTES, 'UTF-8');
 		$cusPassword = htmlspecialchars($_SERVER['PHP_AUTH_PW'], ENT_QUOTES, 'UTF-8');
 		try {
-			$res['client'] = $soap->client_login_get($sessionId,$cusUser,$cusPassword);
+			$res['client'] = $soap->client_login_get($sessionId, $cusUser, $cusPassword);
 			$res['auth'] = true;
 		} catch(SoapFault $e) {
 			$res['error'] = $e;
@@ -169,7 +204,7 @@ function checkAuth() {
 // Function to check if the token is from a user
 //	return true if its a users token
 function isUser($token) {
-	if ($token["type"] == "User") {
+	if ($token->type == "user") {
 		return true;
 	}
 	return false;
@@ -178,7 +213,7 @@ function isUser($token) {
 // Function to check if the token is from a admin
 //	return true if its a users token
 function isAdmin($token) {
-	if ($token["type"] == "Admin") {
+	if ($token->type == "admin") {
 		return true;
 	}
 	return false;
@@ -191,16 +226,19 @@ function checkToken() {
 
 	$authToken = substr($_SERVER['HTTP_AUTHORIZATION'], 7);
 
+
 	if (empty($authToken)) {
 			header('Authorization: Bearer');
 			header('HTTP/1.0 401 Unauthorized');
 			die("Authentication could not finish");
 	}
+
 	// Setup cURL
 	$ch = curl_init($config["auth"]["auth_server"]);
 	curl_setopt_array($ch, array(
 	    CURLOPT_POST => false,
-	    CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_FOLLOWLOCATION, 1,
 	    CURLOPT_HTTPHEADER => array(
 	        'Authorization: Bearer '.$authToken,
 	        'Content-Type: application/json'
@@ -208,12 +246,9 @@ function checkToken() {
 	));
 
 	$response = curl_exec($ch);
+	curl_close($ch);
 
-	if($response === false){
-		return false;
-	}
-
-	$responseData = json_decode($response, true);
+	$responseData = json_decode($response);
 
 	return $responseData;
 }
