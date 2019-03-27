@@ -7,7 +7,7 @@ createClient();
 /*
  * Function to get out all client information
  *   return = json with client information
- * curl -vvv -H "Content-Type: application/json" -d '{"contact_name":"", "username":"", "street":"", "zip":"", "city":"", "password":"", "language":"", "email":"", "country":"", "addon":""}' -X GET localhost:8777/createClient.php
+ * curl -vvv -H "Content-Type: application/json" -d '{"contact_fistname":"", contact_name":"", "username":"", "street":"", "zip":"", "city":"", "password":"", "language":"de", "email":"", "country":"DE", "addon":""}' -X GET localhost:8777/createClient.php
  */
 function createClient() {
 	global $jPost;
@@ -20,6 +20,7 @@ function createClient() {
 	if ($sessionId) {
 		try {
 			$params = array(        
+				'contact_firstname' => $jPost->contact_firstname,
 				'contact_name' => $jPost->contact_name,
 				'username' => $jPost->username,
 				'street' => $jPost->street,
