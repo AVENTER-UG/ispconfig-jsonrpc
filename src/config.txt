@@ -12,6 +12,7 @@ vat = $isp_vat
 default_invoice_template = $isp_default_invoice_template
 default_invoice_email_template = $isp_default_invoice_email_template
 payment_terms = $isp_payment_terms
+reseller_id = $reseller_id
 
 [auth]
 auth_server = '$auth_server'

@@ -15,12 +15,12 @@ RUN set -xe && \
         php-sqlite3 \
         php-xml \
         php-zlib \
-		php-session \
-  		php-gd \
-  		php-curl \
-  		php-zip \
-  		php-mbstring \
-  		php-soap \
+		    php-session \
+  		  php-gd \
+  		  php-curl \
+  		  php-zip \
+  		  php-mbstring \
+  		  php-soap \
         php \
 		php-json && \
     apk add --virtual build_deps gettext && \
