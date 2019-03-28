@@ -27,9 +27,23 @@ function getClient() {
 
 	if ($sessionId) {
 		try {
-			$res = $soap->client_get($sessionId, $token->client_id);		
+			$tmp = $soap->client_get($sessionId, $token->client_id);
+
+			$res = array(
+				'contact_firstname' => $tmp['contact_firstname'],
+				'contact_name' => $tmp['contact_name'],
+				'username' => $tmp['username'],
+				'street' => $tmp['street'],
+				'zip' => $tmp['zip'],
+				'city' => $tmp['city'],
+				'language' => $tmp['language'],
+				'email' => $tmp['email'],
+				'country' => $tmp['country'],
+				'telephone' => $tmp['telephone']
+			);
+
   		} catch(SoapFault $e) {		
-			$res['error'] = "ERR GC:\t".$jPost->customer."\t".$e->getMessage()."\t".$soap->__getLastResponse()."\n"; 
+			$res['error'] = "ERR GC:\t".$tmp['username']."\t".$e->getMessage()."\t".$soap->__getLastResponse()."\n"; 
 		} 			
 	}
 

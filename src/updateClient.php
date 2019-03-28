@@ -13,13 +13,29 @@ function updateClient() {
 	global $jPost;
 	global $config;
 
+	$token = checkToken();
+
 	$res['method'] = "updateClient";
 
 	list($soap, $sessionId) = ispLogin();
 
 	if ($sessionId) {
 		try {
-			$soap->client_update($sessionId, $jPost->client_id, $config["company"]["reseller_id"], json_decode(json_encode($jPost), true));		  
+			$params = array(
+				'username' => $jPost->username,
+				'contact_firstname' => $jPost->contact_firstname,
+				'contact_name' => $jPost->contact_name,
+				'street' => $jPost->street,
+				'zip' => $jPost->zip,
+				'city' => $jPost->city,
+				'language' => $jPost->language,
+				'email' => $jPost->email,
+				'telephone' => $jPost->telephone,
+				'ssh_chroot' => 'no',
+				'web_php_options' => 'no',				
+				);
+
+			$soap->client_update($sessionId, $token->client_id, $config["company"]["reseller_id"], $params);
 		} catch(SoapFault $e) {
 			$res['error'] = "ERR GC:\t".$jPost->username."\t".$e->getMessage()."\t".$soap->__getLastResponse()."\n"; 
 		} 
