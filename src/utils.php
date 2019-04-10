@@ -30,7 +30,6 @@ function checkToken() {
 
 	$authToken = substr($_SERVER['HTTP_AUTHORIZATION'], 7);
 
-
 	if (empty($authToken)) {
 			header('Authorization: Bearer');
 			header('HTTP/1.0 401 Unauthorized');
@@ -50,8 +49,12 @@ function checkToken() {
 	));
 
 	$response = curl_exec($ch);
-	curl_close($ch);
 
+	if($response === false) {
+		echo 'Curl error: ' . curl_error($ch);
+	} else {
+		curl_close($ch);
+	}
 	$responseData = json_decode($response);
 
 	return $responseData;
