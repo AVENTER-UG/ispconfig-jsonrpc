@@ -31,6 +31,9 @@ function checkAuth() {
 		$cusPassword = htmlspecialchars($_SERVER['PHP_AUTH_PW'], ENT_QUOTES, 'UTF-8');
 		try {
 			$res['client'] = $soap->client_login_get($sessionId, $cusUser, $cusPassword);
+			$client = $soap->client_get($sessionId, $res['client']['client_id']);
+			$res['client']['group_master'] = $client['template_master'];
+			$res['client']['group_sadditional'] = $client['template_additional'];
 			$res['auth'] = true;
 		} catch(SoapFault $e) {
 			$res['error'] = $e;
