@@ -40,7 +40,7 @@ function getClient() {
 				'email' => $tmp['email'],
 				'country' => $tmp['country'],
 				'telephone' => $tmp['telephone'],
-				'group_master' => $tmp['template_master']
+				'group_master' => $tmp['template_master'],
 				'group_additional' => $tmp['template_additional']
 			);
 

@@ -33,7 +33,7 @@ function checkAuth() {
 			$res['client'] = $soap->client_login_get($sessionId, $cusUser, $cusPassword);
 			$client = $soap->client_get($sessionId, $res['client']['client_id']);
 			$res['client']['group_master'] = $client['template_master'];
-			$res['client']['group_sadditional'] = $client['template_additional'];
+			$res['client']['group_additional'] = $client['template_additional'];
 			$res['auth'] = true;
 		} catch(SoapFault $e) {
 			$res['error'] = $e;
