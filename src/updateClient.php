@@ -22,7 +22,7 @@ function updateClient() {
 	if ($sessionId) {
 		try {
 			$params = array(
-				'username' => $jPost->username,
+
 				'contact_firstname' => $jPost->contact_firstname,
 				'contact_name' => $jPost->contact_name,
 				'street' => $jPost->street,
@@ -30,9 +30,7 @@ function updateClient() {
 				'city' => $jPost->city,
 				'language' => $jPost->language,
 				'email' => $jPost->email,
-				'telephone' => $jPost->telephone,
-				'ssh_chroot' => 'no',
-				'web_php_options' => 'no',				
+				'telephone' => $jPost->telephone,			
 				);
 
 			$soap->client_update($sessionId, $token->client_id, $config["company"]["reseller_id"], $params);
