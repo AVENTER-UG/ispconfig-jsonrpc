@@ -23,18 +23,15 @@ function createClient() {
 				'contact_firstname' => $jPost->contact_firstname,
 				'contact_name' => $jPost->contact_name,
 				'username' => $jPost->username,
-				'street' => $jPost->street,
-				'zip' => $jPost->zip,
-				'city' => $jPost->city,
 				'ssh_chroot' => 'no',
 				'web_php_options' => 'no',
 				'password' => $jPost->password,
-				'language' => $jPost->language,
 				'usertheme' => 'default',
 				'email' => $jPost->email,
-				'country' => $jPost->country,
-				'active' => 'y',
-				'template_additional' => "/".$jPost->addon."/"				
+				'parent_client_id' => $config["company"]["reseller_id"],
+				'limit_client' => 0, // If this value is > 0, then the client is a reseller
+				'language' => 'en',
+				'created_at' => 0
 				);
 				
 			$clientId = $soap->client_add($sessionId, $config["company"]["reseller_id"], $params);
