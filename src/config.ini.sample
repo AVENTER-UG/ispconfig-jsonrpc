@@ -9,6 +9,7 @@ allow_self_signed = true
 [company]
 id = 1
 vat = 19.00
+vat_id = 7
 default_invoice_template = 1
 default_invoice_email_template = 1
 payment_terms = 1

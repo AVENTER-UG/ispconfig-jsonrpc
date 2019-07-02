@@ -13,7 +13,7 @@ function createInvoice() {
 
 	// Check if the token is valid and the owner is a admin
 	$token = checkToken();
-	if (!isAdmin($token)) {
+	if (!isUser($token)) {
 		$res["error"] = "unauthorized";
 		echo json_encode($res);	
 		return;
@@ -22,60 +22,58 @@ function createInvoice() {
 	list($soap, $sessionId) = ispLogin();
 
 	if ($sessionId) {
-		try {			
-			$client = $soap->client_get_by_username($sessionId, htmlentities($jPost->customer));
-			$params = array(
-				'invoice_type' => 'invoice',
-		  		'invoice_company_id' => $config["company"]["id"],
-		  		'client_id' => $client["client_id"],
-		  		'payment_terms' => $config["company"]["payment_terms"],
-		  		'payment_gateway' => 'auto',
-		  		'status_printed' => 'n',
-		  		'status_sent' => 'n',
-		  		'status_paid' => 'n'
-	  		); 
+		try {
+			$user = $soap->client_get($sessionId, htmlentities($jPost->tenant_id));
 
-			// Create invoice
-      		$invoiceId = $soap->billing_invoice_add($sessionId, $client["client_id"], $params);
-			if (!$invoiceId) {
-				$res['error'] = "ERR GC:\t".htmlentities($jPost->customer)."\t Unknown Error, but it looks like I could not create a Invoice\n"; 	
-			} else {
-				// Now we have to add the items into the invoice				
-	  			$params = array( 
-					'client_id' => $client["client_id"],
-					'name' => $jPost->description,
-					'quantity' => $jPost->quantity,
-					'price' => preg_replace("/,/i",".",$jPost->unitprice),
-					'vat' => $config["company"]["vat"],
+			try {
+				$params = array(
+					'invoice_type' => 'invoice',
+					'invoice_company_id' => $config["company"]["id"],
+					'client_id' => $user["client_id"],
+					'payment_terms' => $config["company"]["payment_terms"],
+					'payment_gateway' => 'auto',
+					'invoice_vat_rate_id' => $config["company"]["vat_id"],
+					'status_printed' => 'n',
+					'country' => strtoupper($user['country']),
+					'status_sent' => 'n',
+					'status_paid' => 'n',
+					'name' => 'MulinBox',
+					'quantity' => '1',
+					'price' => preg_replace("/,/i",".",htmlentities($jPost->price)),
 					'advance_payment' => 'y',
 					'active' => 'y',
 					'type' => 'clienttemplate',
-					'start_date' => date("d.m.Y",mktime(0, 0, 0, date("m"), date("d"),   date("Y"))),
+					'start_date' => date("Y-m-d"),
+					'next_payment_date' => date("Y-m-d"),
 					'invoice_item_template_id' => $config["company"]["default_invoice_template"],
-					'description' => $jPost->description
-				);
-				
-				// if its a monthly paiment
-				if ($jPost->period == "months") {
-					$paramAdd = array(
-						'recur_months' => '1',
-					);
+					'description' => htmlentities($jPost->description),
+					'recur_months' => '1',
+					'invoice_vat_rate_id' => $config["company"]["vat_id"],
+					'vat' => $config["company"]["vat"],
+					'add_to_invoice' => 'y'					
+				); 
+				// Create invoice
+				$invoiceId = $soap->billing_invoice_add($sessionId, $user["client_id"], $params);
 
-					array_push($params, $paramAdd);
-					
+				$res['params'] = $params;
+				$res["invoice_id"] = $invoiceId;
+
+				if (!$invoiceId) {
+					$res['error'] = "ERR GC:\t".htmlentities($user['client_id'])."\t Unknown Error, but it looks like I could not create a Invoice\n"; 	
+				} else {
+							
 					$req = $soap->billing_invoice_recurring_item_add($sessionId, $invoiceId, $params);
-				}
+		
+					// Invoice finalizing and send it out
+					//$soap->billing_invoice_finalize($sessionId, $invoiceId);
+					//$soap->billing_invoice_send($sessionId, $invoiceId, $config["company"]["default_invoice_email_template"]);
 
-				// if its a one time paiment
-				if ($jPost->period == "once") {
-					$req = $soap->billing_invoice_item_add($sessionId, $invoiceId, $params);
+					$res["invoiceitem_id"] = $req;
 				}
-
-	  			// Invoice finalizing and send it out
-	  			//soap->billing_invoice_finalize($sessionId, $invoiceId);
-				//$soap->billing_invoice_send($sessionId, $invoiceId, $config["company"]["default_invoice_email_template"]);
-				$res["data"] = $invoiceId;
+			} catch (SoapFault $e) {
+				$res['error'] = "ERR GC:\t".htmlentities($user['client_id'])."\t".$e->getMessage()."\t".$soap->__getLastResponse()."\n"; 
 			}
+		
 		} catch (SoapFault $e) {
 			$res['error'] = "ERR GC:\t".htmlentities($jPost->customer)."\t".$e->getMessage()."\t".$soap->__getLastResponse()."\n"; 
 		}
@@ -83,4 +81,3 @@ function createInvoice() {
 
 	echo json_encode($res);	
 }
-

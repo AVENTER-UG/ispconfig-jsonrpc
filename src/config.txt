@@ -9,6 +9,7 @@ allow_self_signed = '$isp_allow_self_signed'
 [company]
 id = $isp_id
 vat = $isp_vat
+vat_id = $isp_vat_id
 default_invoice_template = $isp_default_invoice_template
 default_invoice_email_template = $isp_default_invoice_email_template
 payment_terms = $isp_payment_terms
