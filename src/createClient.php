@@ -35,11 +35,19 @@ function createClient() {
 				'created_at' => 0,
 				'payment_gateway' => 'auto',
 				'invoice_company_id' => $config["company"]["id"]
-				);
+			);
 				
 			$clientId = $soap->client_add($sessionId, $config["company"]["reseller_id"], $params);
 			$res['client_id'] = $clientId;
-		  
+
+			$params = array(        
+				'payment_gateway' => 'auto',
+				'invoice_company_id' => $config["company"]["id"]
+			);			
+			
+			$bill = $soap->billing_invoice_client_settings_update($sessionId, $clientId, $params);
+			$res['billing'] = $bill;
+
 		} catch(SoapFault $e) {
 			$res['error'] = "ERR GC:\t".$jPost->username."\t".$e->getMessage()."\t".$soap->__getLastResponse()."\n"; 
 		} 
