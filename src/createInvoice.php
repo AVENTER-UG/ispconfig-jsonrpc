@@ -27,12 +27,10 @@ function createInvoice() {
 
 			try {
 				$params = array(
-					'invoice_type' => 'invoice',
 					'invoice_company_id' => $config["company"]["id"],
 					'client_id' => $user["client_id"],
 					'payment_terms' => $config["company"]["payment_terms"],
 					'payment_gateway' => 'auto',
-					'invoice_vat_rate_id' => $config["company"]["vat_id"],
 					'status_printed' => 'n',
 					'country' => strtoupper($user['country']),
 					'status_sent' => 'n',
@@ -48,8 +46,6 @@ function createInvoice() {
 					'invoice_item_template_id' => $config["company"]["default_invoice_template"],
 					'description' => htmlentities($jPost->description),
 					'recur_months' => '1',
-					'invoice_vat_rate_id' => $config["company"]["vat_id"],
-					'vat' => $config["company"]["vat"],
 					'add_to_invoice' => 'y'					
 				); 
 				// Create invoice
@@ -60,8 +56,36 @@ function createInvoice() {
 
 				if (!$invoiceId) {
 					$res['error'] = "ERR GC:\t".htmlentities($user['client_id'])."\t Unknown Error, but it looks like I could not create a Invoice\n"; 	
-				} else {
+				} else {					
 							
+					$req = $soap->billing_invoice_recurring_item_add($sessionId, $invoiceId, $params);
+
+					// Provision hinzufuegen
+					$params = array(
+						'invoice_company_id' => $config["company"]["id"],
+						'client_id' => $user["client_id"],
+						'payment_terms' => $config["company"]["payment_terms"],
+						'payment_gateway' => 'auto',
+						'status_printed' => 'n',
+						'country' => strtoupper($user['country']),
+						'status_sent' => 'n',
+						'status_paid' => 'n',
+						'name' => 'MulinBox Provision',
+						'quantity' => '1',
+						'price' => ((preg_replace("/,/i",".",htmlentities($jPost->price)) / 100) * $config['company']['provision_percent']) / 2,
+						'advance_payment' => 'y',
+						'active' => 'y',
+						'type' => 'clienttemplate',
+						'start_date' => date("Y-m-d"),
+						'next_payment_date' => date("Y-m-d"),
+						'invoice_item_template_id' => $config["company"]["default_invoice_template"],
+						'description' => htmlentities($jPost->description),
+						'recur_months' => '1',
+						'invoice_vat_rate_id' => $config["company"]["vat_id"],
+						'vat' => $config["company"]["vat"],
+						'add_to_invoice' => 'y'					
+					); 
+
 					$req = $soap->billing_invoice_recurring_item_add($sessionId, $invoiceId, $params);
 		
 					// Invoice finalizing and send it out

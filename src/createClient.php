@@ -5,7 +5,7 @@ include 'utils.php';
 createClient();
 
 /*
- * Function to get out all client information
+ * Function to create a client
  *   return = json with client information
  * curl -vvv -H "Content-Type: application/json" -d '{"contact_fistname":"", contact_name":"", "username":"", "street":"", "zip":"", "city":"", "password":"", "language":"de", "email":"", "country":"DE", "addon":""}' -X GET localhost:8777/createClient.php
  */
@@ -30,8 +30,11 @@ function createClient() {
 				'email' => $jPost->email,
 				'parent_client_id' => $config["company"]["reseller_id"],
 				'limit_client' => 0, // If this value is > 0, then the client is a reseller
-				'language' => 'en',
-				'created_at' => 0
+				'language' => 'de',
+				'country' => 'DE',
+				'created_at' => 0,
+				'payment_gateway' => 'auto',
+				'invoice_company_id' => $config["company"]["id"]
 				);
 				
 			$clientId = $soap->client_add($sessionId, $config["company"]["reseller_id"], $params);
