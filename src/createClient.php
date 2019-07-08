@@ -20,14 +20,14 @@ function createClient() {
 	if ($sessionId) {
 		try {
 			$params = array(        
-				'contact_firstname' => $jPost->contact_firstname,
-				'contact_name' => $jPost->contact_name,
-				'username' => $jPost->username,
+				'contact_firstname' => htmlentities($jPost->contact_firstname),
+				'contact_name' => htmlentities($jPost->contact_name),
+				'username' => htmlentities($jPost->username),
 				'ssh_chroot' => 'no',
 				'web_php_options' => 'no',
-				'password' => $jPost->password,
+				'password' => htmlentities($jPost->password),
 				'usertheme' => 'default',
-				'email' => $jPost->email,
+				'email' => htmlentities($jPost->email),
 				'parent_client_id' => $config["company"]["reseller_id"],
 				'limit_client' => 0, // If this value is > 0, then the client is a reseller
 				'language' => 'de',

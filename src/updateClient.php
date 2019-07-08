@@ -22,16 +22,17 @@ function updateClient() {
 	if ($sessionId) {
 		try {
 			$params = array(
-
-				'contact_firstname' => $jPost->contact_firstname,
-				'contact_name' => $jPost->contact_name,
-				'street' => $jPost->street,
-				'zip' => $jPost->zip,
-				'city' => $jPost->city,
-				'language' => $jPost->language,
-				'email' => $jPost->email,
-				'telephone' => $jPost->telephone,			
-				);
+				'contact_firstname' => htmlentities($jPost->contact_firstname),
+				'contact_name' => htmlentities($jPost->contact_name),
+				'street' => htmlentities($jPost->street),
+				'zip' => htmlentities($jPost->zip),
+				'city' => htmlentities($jPost->city),
+				'language' => htmlentities($jPost->language),
+				'email' => htmlentities($jPost->email),
+				'telephone' => htmlentities($jPost->telephone),
+				'notes' => htmlentities($jPost->aboutme),
+				'password' => ''
+			);
 
 			$soap->client_update($sessionId, $token->client_id, $config["company"]["reseller_id"], $params);
 		} catch(SoapFault $e) {
