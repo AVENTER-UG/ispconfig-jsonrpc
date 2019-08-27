@@ -37,7 +37,7 @@ function checkToken() {
 	}
 
 	// Setup cURL
-	$ch = curl_init($config["auth"]["auth_server"]."/api/v0/CheckUserToken");
+	$ch = curl_init($config["auth"]["auth_server"]."/api/auth/v0/CheckUserToken");
 	curl_setopt_array($ch, array(
 	    CURLOPT_POST => false,
 		CURLOPT_RETURNTRANSFER => true,
