@@ -97,7 +97,7 @@ function createInvoice() {
 		
 					// Invoice finalizing and send it out
 					$soap->billing_invoice_finalize($sessionId, $invoiceId);
-					//$soap->billing_invoice_send($sessionId, $invoiceId, $config["company"]["default_invoice_email_template"]);
+					$soap->billing_invoice_send($sessionId, $invoiceId, $config["company"]["default_invoice_email_template"]);
 					$req = $soap->billing_invoice_get($sessionId, $invoiceId);
 
 					$res["invoicedata"] = $req;
