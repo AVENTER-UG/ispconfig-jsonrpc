@@ -13,6 +13,8 @@ function updateClient() {
 	global $jPost;
 	global $config;
 
+	print_r($jPost);	
+
 	$token = checkToken();
 
 	$res['method'] = "updateClient";
@@ -32,7 +34,7 @@ function updateClient() {
 				'telephone' => htmlentities($jPost->telephone),
 				'notes' => htmlentities($jPost->aboutme),
 				'password' => ''
-			);
+			);			
 
 			$soap->client_update($sessionId, $token->client_id, $config["company"]["reseller_id"], $params);
 		} catch(SoapFault $e) {
