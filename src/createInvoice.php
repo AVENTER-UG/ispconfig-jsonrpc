@@ -59,6 +59,7 @@ function createInvoice() {
 						'invoice_item_template_id' => $config["company"]["default_invoice_template"],
 						'description' => htmlentities($jPost->description),
 						'recur_months' => '1',
+						'invoice_vat_rate_id' => 1,
 						'vat' => 0,
 						'add_to_invoice' => 'y'					
 					); 
@@ -88,7 +89,7 @@ function createInvoice() {
 						'description' => "MulinBox Service Fee",
 						'recur_months' => '1',
 						'invoice_vat_rate_id' => $config["company"]["vat_id"],
-						'vat' => $config["company"]["vat"],
+						'vat' => $config["company"]["vat"],				
 						'add_to_invoice' => 'y'					
 					); 
 
