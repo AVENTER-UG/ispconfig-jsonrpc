@@ -43,7 +43,7 @@ function createInvoice() {
 						'invoice_company_id' => $config["company"]["id"],
 						'client_id' => $user["client_id"],
 						'payment_terms' => $config["company"]["payment_terms"],
-						'payment_gateway' => 'auto',
+						'payment_gateway' => 'Auto',
 						'status_printed' => 'n',
 						'country' => strtoupper($user['country']),
 						'status_sent' => 'n',
@@ -64,15 +64,15 @@ function createInvoice() {
 						'add_to_invoice' => 'y'					
 					); 
 
-					$req = $soap->billing_invoice_item_add($sessionId, $invoiceId, $params);				
+					$req = $soap->billing_invoice_item_add($sessionId, $invoiceId, $params);
 					$req = $soap->billing_invoice_recurring_item_add($sessionId, $invoiceId, $params);				
 
-					// Provision hinzufuegen
+					// Provision hinzufuegen@
 					$params = array(
 						'invoice_company_id' => $config["company"]["id"],
 						'client_id' => $user["client_id"],
 						'payment_terms' => $config["company"]["payment_terms"],
-						'payment_gateway' => 'auto',
+						'payment_gateway' => 'Auto',
 						'status_printed' => 'n',
 						'country' => strtoupper($user['country']),
 						'status_sent' => 'n',
@@ -89,13 +89,13 @@ function createInvoice() {
 						'description' => "MulinBox Service Fee",
 						'recur_months' => '1',
 						'invoice_vat_rate_id' => $config["company"]["vat_id"],
-						'vat' => $config["company"]["vat"],				
+						'vat' => $config["company"]["vat"],			
 						'add_to_invoice' => 'y'					
 					); 
 
 					$req = $soap->billing_invoice_item_add($sessionId, $invoiceId, $params);
 					$req = $soap->billing_invoice_recurring_item_add($sessionId, $invoiceId, $params);
-		
+
 					// Invoice finalizing and send it out
 					$soap->billing_invoice_finalize($sessionId, $invoiceId);
 					$soap->billing_invoice_send($sessionId, $invoiceId, $config["company"]["default_invoice_email_template"]);
@@ -104,11 +104,11 @@ function createInvoice() {
 					$res["invoicedata"] = $req;
 				}
 			} catch (SoapFault $e) {
-				$res['error'] = "ERR GC:\t".htmlentities($user['client_id'])."\t".$e->getMessage()."\t".$soap->__getLastResponse()."\n"; 
+				$res['error'] = "ERR 1 GC:\t".htmlentities($user['client_id']).htmlentities($user['sys_userid'])."\t".$e->getMessage()."\t".$soap->__getLastResponse()."\n"; 
 			}
 		
 		} catch (SoapFault $e) {
-			$res['error'] = "ERR GC:\t".htmlentities($user['client_id'])."\t".$e->getMessage()."\t".$soap->__getLastResponse()."\n"; 
+			$res['error'] = "ERR 2 GC:\t".htmlentities($user['client_id'])."\t".$e->getMessage()."\t".$soap->__getLastResponse()."\n"; 
 		}
 	}
 

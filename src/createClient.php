@@ -28,12 +28,12 @@ function createClient() {
 				'password' => htmlentities($jPost->password),
 				'usertheme' => 'default',
 				'email' => htmlentities($jPost->email),
-				'parent_client_id' => $config["company"]["reseller_id"],
 				'limit_client' => 0, // If this value is > 0, then the client is a reseller
+				'limit_cron_type' => 'chrooted',
 				'language' => 'de',
 				'country' => 'DE',
 				'created_at' => 0,
-				'payment_gateway' => 'auto',
+				'payment_gateway' => 'Auto',
 				'invoice_company_id' => $config["company"]["id"]
 			);
 				
@@ -41,7 +41,7 @@ function createClient() {
 			$res['client_id'] = $clientId;
 
 			$params = array(        
-				'payment_gateway' => 'auto',
+				'payment_gateway' => 'Auto',
 				'invoice_company_id' => $config["company"]["id"]
 			);			
 			
