@@ -23,7 +23,7 @@ function createInvoice() {
 
 	if ($sessionId) {
 		try {
-			$user = $soap->client_get($sessionId, htmlentities($jPost->tenant_id));
+			$user = $soap->client_get($sessionId, htmlentities($token->client_id));
 
 			try {
 				$params = array();
@@ -60,7 +60,7 @@ function createInvoice() {
 						'description' => htmlentities($jPost->description),
 						'recur_months' => '1',
 						'invoice_vat_rate_id' => 1,
-						'vat' => 0,
+						'vat' => 0.00,
 						'add_to_invoice' => 'y'					
 					); 
 
