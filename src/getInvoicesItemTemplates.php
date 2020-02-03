@@ -15,7 +15,13 @@ function getInvoicesItemTemplates() {
 	
 	if($sessionId) {
 		try {
-			$invoices = $soap->billing_invoice_item_template_get($sessionId, -1);
+			if (isset($_GET['id'])) {
+				$templateId = filter_input(INPUT_GET,"id",FILTER_SANITIZE_STRING);
+				$res["template_id"] = $templateId;
+				$invoices = $soap->billing_invoice_item_template_get($sessionId, $templateId);
+			} else {
+				$invoices = $soap->billing_invoice_item_template_get($sessionId, -1);
+			}
 			$res['data'] = $invoices;
 		} catch(SoapFault $e) {
 			$res['error'] = "ERR GC:\t"."\t".$e->getMessage()."\t".$soap->__getLastResponse()."\n"; 
