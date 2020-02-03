@@ -30,8 +30,10 @@ RUN set -xe && \
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY src/ /var/www/html
 COPY run.sh /run.sh
+COPY php-fpm.conf /etc/php7/php-fpm.conf
 
 RUN rm -rf /var/www/html/callback
+
 
 EXPOSE 8888
 

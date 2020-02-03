@@ -50,6 +50,7 @@ function createClient() {
 
 		} catch(SoapFault $e) {
 			$res['error'] = "ERR GC:\t".$jPost->username."\t".$e->getMessage()."\t".$soap->__getLastResponse()."\n"; 
+			$res['msg'] = $e->getMessage();
 		} 
 	}
 
