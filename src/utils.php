@@ -29,6 +29,7 @@ function checkToken() {
 	global $config;
 
 	$authToken = substr($_SERVER['HTTP_AUTHORIZATION'], 7);
+	
 
 	if (empty($authToken)) {
 			header('Authorization: Bearer');
