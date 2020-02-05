@@ -18,3 +18,9 @@ provision_percent = 10
 
 [auth]
 auth_server = 'https://<server>/'
+
+[email]
+password = 'dideldadeldu'
+username = 'ichbineinschuh'
+host = 'mailserver.com'
+sender = 'der@die.de'

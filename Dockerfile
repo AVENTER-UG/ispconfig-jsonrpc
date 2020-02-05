@@ -15,20 +15,21 @@ RUN set -xe && \
         php-sqlite3 \
         php-xml \
         php-zlib \
-		    php-session \
-  		  php-gd \
-  		  php-curl \
-  		  php-zip \
-  		  php-mbstring \
-  		  php-soap \
+		php-session \
+  		php-gd \
+  		php-curl \
+  		php-zip \
+  		php-mbstring \
+  		php-soap \
         php \
-		    php-json && \
-    apk add --virtual build_deps gettext && \
-    cp /usr/bin/envsubst /usr/local/bin/envsubst && \
-    apk del build_deps
+		php-json && \
+        apk add --virtual build_deps gettext && \
+        cp /usr/bin/envsubst /usr/local/bin/envsubst && \
+        apk del build_deps
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY src/ /var/www/html
+COPY src/lib /var/www/html/lib
 COPY run.sh /run.sh
 COPY php-fpm.conf /etc/php7/php-fpm.conf
 

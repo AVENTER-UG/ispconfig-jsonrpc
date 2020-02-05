@@ -18,3 +18,9 @@ provision_percent = $isp_provision_percent
 
 [auth]
 auth_server = '$auth_server'
+
+[email]
+password = '$isp_email_password'
+username = '$isp_email_username'
+host = '$isp_email_host'
+sender = '$isp_email_sender'
