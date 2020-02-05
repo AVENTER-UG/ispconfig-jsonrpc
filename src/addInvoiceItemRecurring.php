@@ -31,7 +31,8 @@ function AddInvoiceItemRecurring() {
 				$invoiceId = filter_input(INPUT_GET,"id",FILTER_SANITIZE_STRING);
 				// Produktdaten auslesen
 				$template = $soap->billing_invoice_item_template_get($sessionId, htmlspecialchars($jPost->invoice_item_template_id));
-
+				$res["template"] = $template;
+				
 				if (!$invoiceId) {
 					$res['error'] = "ERR GC:\t".htmlentities($user['client_id'])."\t Unknown Error, but it looks like I could not create a Invoice\n"; 	
 				} else {					
