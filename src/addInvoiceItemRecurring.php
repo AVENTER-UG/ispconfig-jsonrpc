@@ -27,8 +27,10 @@ function AddInvoiceItemRecurring() {
 
 			try {
 				$params = array();
-				// Rechnung erstellen
+				
 				$invoiceId = filter_input(INPUT_GET,"id",FILTER_SANITIZE_STRING);
+				// Produktdaten auslesen
+				$template = $soap->billing_invoice_item_template_get($sessionId, htmlspecialchars($jPost->invoice_item_template_id));
 
 				if (!$invoiceId) {
 					$res['error'] = "ERR GC:\t".htmlentities($user['client_id'])."\t Unknown Error, but it looks like I could not create a Invoice\n"; 	
@@ -47,26 +49,25 @@ function AddInvoiceItemRecurring() {
 						'country' => strtoupper($user['country']),
 						'status_sent' => 'n',
 						'status_paid' => 'n',
-						'name' => htmlentities($jPost->shop_title),
+						'name' => $template["shop_title"],
 						'quantity' => htmlentities($jPost->quantity),
-						'price' => preg_replace("/,/i",".",htmlentities($jPost->price)),
+						'price' => $template["price"],
 						'advance_payment' => 'y',
 						'active' => 'y',
 						'type' => 'clienttemplate',
 						'start_date' => $paymentDate,
 						'next_payment_date' => $paymentDate,
 						'invoice_item_template_id' => $jPost->invoice_item_template_id,
-						'description' => htmlentities($jPost->description),
-						'recur_months' => htmlentities($jPost->recur_months),
-						'invoice_vat_rate_id' => htmlentities($jPost->invoice_vat_rate_id),
+						'description' => $template["description"],
+						'recur_months' => $template["recur_months"],
+						'invoice_vat_rate_id' => $template["invoice_vat_rate_id"],
 						'vat' => "nicht_auto",
-						'add_to_invoice' => 'y'		
+						'add_to_invoice' => 'y'	
 					); 
 
 					$req = $soap->billing_invoice_recurring_item_add($sessionId, $invoiceId, $params);				
 
 					$res["invoicedata"] = $req;
-					$res["params"] = $params;
 				}
 			} catch (SoapFault $e) {
 				$res['error'] = "ERR 1 GC:\t".htmlentities($user['client_id']).htmlentities($user['sys_userid'])."\t".$e->getMessage()."\t".$soap->__getLastResponse()."\n"; 
