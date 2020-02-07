@@ -24,3 +24,7 @@ password = '$isp_email_password'
 username = '$isp_email_username'
 host = '$isp_email_host'
 sender = '$isp_email_sender'
+
+[inwx]
+username = '$isp_inwx_username'
+password = '$isp_inwx_password'

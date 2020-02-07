@@ -4,9 +4,9 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-require 'lib/Exception.php';
-require 'lib/PHPMailer.php';
-require 'lib/SMTP.php';
+require 'lib/PHPMailer/Exception.php';
+require 'lib/PHPMailer/PHPMailer.php';
+require 'lib/PHPMailer/SMTP.php';
 
 include 'utils.php';
 

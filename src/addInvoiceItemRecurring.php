@@ -71,7 +71,7 @@ function AddInvoiceItemRecurring() {
 					$res["invoicedata"] = $req;
 				}
 			} catch (SoapFault $e) {
-				$res['error'] = "ERR 1 GC:\t".htmlentities($user['client_id']).htmlentities($user['sys_userid'])."\t".$e->getMessage()."\t".$soap->__getLastResponse()."\n"; 
+				$res['error'] = "ERR 1 GC:\t".htmlentities($user['client_id'])."\t".$e->getMessage()."\t".$soap->__getLastResponse()."\n"; 
 				$res['msg'] = $e->getMessage();				
 			}
 		

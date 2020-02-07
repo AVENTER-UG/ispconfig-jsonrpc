@@ -24,3 +24,7 @@ password = 'dideldadeldu'
 username = 'ichbineinschuh'
 host = 'mailserver.com'
 sender = 'der@die.de'
+
+[inwx]
+username = 'username'
+password = 'password'
