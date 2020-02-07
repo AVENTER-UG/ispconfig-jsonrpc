@@ -49,7 +49,7 @@ function dnsZoneAdd() {
 						'minimum' => '3600',
 						'ttl' => '3600',
 						'active' => 'y',
-						'xfer' => $config["dns"]["xfter"],
+						'xfer' => $config["dns"]["xfer"],
 						'also_notify' => $config["dns"]["notify"],
 						'update_acl' => '',
 					);
