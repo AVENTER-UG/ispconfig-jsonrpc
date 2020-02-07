@@ -28,3 +28,12 @@ sender = '$isp_email_sender'
 [inwx]
 username = '$isp_inwx_username'
 password = '$isp_inwx_password'
+
+[dns]
+server_id = '$isp_dns_server_id'
+ns = '$isp_dns_ns'
+mbox = '$isp_dns_mbox'
+xfer = '$isp_dns_xfer'
+notify = '$isp_dns_notify'
+server_id_second = '$isp_dns_server_id_second'
+ns_second = '$isp_dns_ns_second'

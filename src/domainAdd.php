@@ -34,11 +34,11 @@ function domainAdd() {
 					$res['error'] = "ERR GC:\t".htmlentities($user['client_id'])."\t Unknown Error, but it looks like I cannot add a domain\n"; 	
 				} else {					
 
-					$res["domain"] = $domain;
+					$res["domain"] = htmlspecialchars($domain);
 
 
 					$params = array(
-						'domain' => $domain
+						'domain' => htmlspecialchars($domain)
 					); 
 
 					$req = $soap->domains_domain_add($sessionId, $user["client_id"], $params);

@@ -28,3 +28,12 @@ sender = 'der@die.de'
 [inwx]
 username = 'username'
 password = 'password'
+
+[dns]
+server_id = '1'
+ns = 'ns1.dnsserver.dns'
+mbox = 'zonemaster.test.tld.'
+xfer = '127.0.0.2'
+notify = '127.0.0.2'
+server_id_second = '2'
+ns_second = '10.0.0.2'
