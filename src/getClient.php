@@ -19,6 +19,7 @@ function getClient() {
 	$token = checkToken();
 	if (!isUser($token) && !isAdmin($token) ) {
 		$res["error"] = "unauthorized";
+		$res["msg"] = $token;
 		echo json_encode($res);	
 		return;
 	}		
@@ -41,7 +42,8 @@ function getClient() {
 				'country' => $tmp['country'],
 				'telephone' => $tmp['telephone'],
 				'group_master' => $tmp['template_master'],
-				'group_additional' => $tmp['template_additional']
+				'group_additional' => $tmp['template_additional'],
+				'notes' => $tmp['notes']
 			);
 
   		} catch(SoapFault $e) {		

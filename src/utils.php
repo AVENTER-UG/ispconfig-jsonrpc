@@ -56,6 +56,7 @@ function checkToken() {
 	} else {
 		curl_close($ch);
 	}
+
 	$responseData = json_decode($response);
 
 	return $responseData;
